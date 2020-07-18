@@ -67,7 +67,11 @@ class BarcodeScanFragment : Fragment() {
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     setup();
                 } else {
-                    //TODO Explain why app needs permission
+                    parentFragmentManager.commit {
+                        replace(R.id.nav_host, PermissionExplanationFragment::class.java, bundleOf(Constants.FragmentArgs.PermissionExplanation.permissionId to Manifest.permission.CAMERA))
+                        setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+                        addToBackStack(null);
+                    }
                 }
         }
     }
