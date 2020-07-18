@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="permission_camera_title">Дозвіл на користування камерою</string>
+    <string name="permission_camera_info">Дозвіл на користування камерою необхідний для зчитування штрихкодів. Камера використовується тільки при скануванні штрихкодів.</string>
+    <string name="permission_storage_title">Дозвіл на доступ до пам\'яті</string>
+    <string name="permission_storage_info">Дозвіл на доступ до пам\'яті потрібен для збереження даних про ліки. Дозвіл на доступ до пам\'яті використовується тільки для збереження даних, які ви створили та їх зчитування.</string>
+</resources>

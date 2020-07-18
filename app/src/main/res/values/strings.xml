@@ -1,7 +1,10 @@
 <resources>
-    <string name="app_name">Home Medicine Inventory System</string>
+    <string name="app_name" translatable="false">Home Medicine Inventory System</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="permission_camera_title">Camera Permission</string>
+    <string name="permission_camera_info">Camera permission is required to scan barcodes. Camera is used only for scanning barcodes.</string>
+    <string name="permission_storage_title">Storage Permission</string>
+    <string name="permission_storage_info">Storage permission is required to save medicine data. Storage permission used only to store data you\'ve created and to read it.</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="picture">pic</string>
-    <string name="description_info">info desc</string>
 </resources>

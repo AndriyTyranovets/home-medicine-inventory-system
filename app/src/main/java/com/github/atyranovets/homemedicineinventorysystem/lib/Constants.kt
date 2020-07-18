@@ -6,4 +6,10 @@ object Constants {
     object PermissionRequestId {
         val camera = 1;
     }
+
+    object FragmentArgs {
+        object PermissionExplanation {
+            val permissionId: String = "F_PERMISSIONEXPLANATON_PERMISSIONID";
+        }
+    }
 }

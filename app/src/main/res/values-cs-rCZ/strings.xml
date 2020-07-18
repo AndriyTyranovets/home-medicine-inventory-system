@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="permission_camera_title">Povolení kamery</string>
+    <string name="permission_camera_info">Pro skenování čárových kódů je vyžadováno povolení kamery. Kamery se používá pouze pro skenování čárových kódů.</string>
+    <string name="permission_storage_title">Povolení k ukládání</string>
+    <string name="permission_storage_info">K uložení údajů o lécích je vyžadováno povolení k ukládání. Povolení úložiště sloužilo pouze k ukládání vytvořených dat a ke čtení.</string>
+</resources>

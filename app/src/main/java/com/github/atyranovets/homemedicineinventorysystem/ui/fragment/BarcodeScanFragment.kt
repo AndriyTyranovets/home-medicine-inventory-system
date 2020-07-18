@@ -1,16 +1,19 @@
-package com.github.atyranovets.homemedicineinventorysystem.ui.activity
+package com.github.atyranovets.homemedicineinventorysystem.ui.fragment
 
 import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
-import android.view.SurfaceHolder
-import android.view.SurfaceView
-import androidx.appcompat.app.AppCompatActivity
+import android.view.*
 import androidx.core.app.ActivityCompat
+import androidx.core.os.bundleOf
+import androidx.fragment.app.Fragment
 import androidx.core.util.forEach
 import androidx.core.util.isNotEmpty
-import com.example.homemedicineinventorysystem.R
+import androidx.fragment.app.FragmentTransaction
+import androidx.fragment.app.commit
+import androidx.fragment.app.commitNow
+import com.github.atyranovets.homemedicineinventorysystem.R
 import com.github.atyranovets.homemedicineinventorysystem.lib.Constants
 import com.github.atyranovets.homemedicineinventorysystem.lib.requestPermissions
 import com.google.android.gms.vision.CameraSource
@@ -18,66 +21,65 @@ import com.google.android.gms.vision.Detector
 import com.google.android.gms.vision.barcode.Barcode
 import com.google.android.gms.vision.barcode.BarcodeDetector
 
-class BarcodeActivity : AppCompatActivity() {
+
+class BarcodeScanFragment : Fragment() {
 
     private lateinit var cameraSource: CameraSource;
     private lateinit var barcodeDetector: BarcodeDetector;
+    private lateinit var surfaceView: SurfaceView;
 
     private val surfaceHolderCallback = object: SurfaceHolder.Callback {
         override fun surfaceCreated(holder: SurfaceHolder?) {
-            if (ActivityCompat.checkSelfPermission(this@BarcodeActivity, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.checkSelfPermission(context!!, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
                 cameraSource.start(holder);
             }
         }
 
         override fun surfaceChanged(holder: SurfaceHolder?, format: Int, width: Int, height: Int) = Unit;
 
-        override fun surfaceDestroyed(holder: SurfaceHolder?) {
-            cameraSource.stop();
-        }
+        override fun surfaceDestroyed(holder: SurfaceHolder?) = cameraSource.stop();
     }
 
     private val barcodeDetectorProcessor = object: Detector.Processor<Barcode> {
         override fun receiveDetections(detections: Detector.Detections<Barcode>?) {
-            if(detections?.detectedItems?.isNotEmpty() == true) {
                 //TODO Proper handling
-                val barcodes = detections.detectedItems;
-                barcodes.forEach { _, barcode -> Log.d(Constants.loggerTag, barcode.displayValue); }
-            }
+                val barcodes = detections?.detectedItems;
+                barcodes?.forEach { _, barcode -> Log.d(Constants.loggerTag, barcode.displayValue); }
         }
 
         override fun release() = Unit;
     }
 
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_barcode);
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
+                              savedInstanceState: Bundle?): View? {
+        val binding = inflater.inflate(R.layout.fragment_barcode_scan, container, false);
+        surfaceView = binding.findViewById<SurfaceView>(R.id.barcodeCameraSurfaceView);
         requestPermissions(arrayOf(Manifest.permission.CAMERA), Constants.PermissionRequestId.camera) {
             setup();
         }
+        return binding.rootView;
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if(requestCode and Constants.PermissionRequestId.camera != 0 && grantResults.isNotEmpty()) {
-            if(grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                setup();
-            }
-            else {
-                //TODO Show permision required view/fragment
-            }
+        when (requestCode) {
+            Constants.PermissionRequestId.camera ->
+                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    setup();
+                } else {
+                    //TODO Explain why app needs permission
+                }
         }
     }
 
     private fun setup() {
         val barcodeTypes = Barcode.EAN_13 or Barcode.EAN_8 or Barcode.UPC_A or Barcode.UPC_E;
-        barcodeDetector = BarcodeDetector.Builder(this).setBarcodeFormats(barcodeTypes).build();
+        barcodeDetector = BarcodeDetector.Builder(context).setBarcodeFormats(barcodeTypes).build();
         barcodeDetector.setProcessor(barcodeDetectorProcessor);
-        cameraSource = CameraSource.Builder(this, barcodeDetector)
+        cameraSource = CameraSource.Builder(context, barcodeDetector)
                 .setFacing(CameraSource.CAMERA_FACING_BACK)
                 .setAutoFocusEnabled(true)
                 .build();
-        findViewById<SurfaceView>(R.id.barcodeCameraSurfaceView).holder.addCallback(surfaceHolderCallback);
+        surfaceView.holder.addCallback(surfaceHolderCallback);
     }
 }
